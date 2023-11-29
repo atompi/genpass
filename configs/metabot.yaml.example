@@ -1,0 +1,19 @@
+core:
+  threads: 4
+  log:
+    level: INFO
+    path: ./logs/metabot.log
+
+input:
+  type: aliyun
+  path: ./in/source.csv
+  access_key_id: <your access key id>
+  access_key_secret: <your access key secret>
+  region_id: <your region id>
+
+output:
+  type: csv
+  path: ./out/metabot.csv
+
+resource:
+  type: custom
