@@ -26,7 +26,7 @@ import (
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "genpass",
+	Use:   "genpass [length]",
 	Short: "A tool for generating random passwords",
 	Long: `A tool for generating random passwords.
 It basically conforms to the OWASP strong password specification.`,
@@ -34,7 +34,7 @@ It basically conforms to the OWASP strong password specification.`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	Run: func(cmd *cobra.Command, args []string) {
-		opts := options.NewOptions()
+		opts := options.NewOptions(args)
 		handle.Handle(opts)
 	},
 }
@@ -59,13 +59,11 @@ func init() {
 	rootCmd.PersistentFlags().BoolP("letter", "l", false, "with letters")
 	rootCmd.PersistentFlags().BoolP("number", "n", false, "with numbers")
 	rootCmd.PersistentFlags().BoolP("symbol", "s", false, "with symbols")
-	rootCmd.PersistentFlags().IntP("length", "L", 8, "password length")
 
 	viper.BindPFlag("all", rootCmd.PersistentFlags().Lookup("all"))
 	viper.BindPFlag("letter", rootCmd.PersistentFlags().Lookup("letter"))
 	viper.BindPFlag("number", rootCmd.PersistentFlags().Lookup("number"))
 	viper.BindPFlag("symbol", rootCmd.PersistentFlags().Lookup("symbol"))
-	viper.BindPFlag("length", rootCmd.PersistentFlags().Lookup("length"))
 }
 
 // initConfig reads in config file and ENV variables if set.
