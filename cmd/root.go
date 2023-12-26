@@ -22,8 +22,8 @@ import (
 	"syscall"
 
 	logkit "github.com/atompi/go-kits/log"
-	"github.com/atompi/metabot/internal/execute"
-	"github.com/atompi/metabot/internal/options"
+	"github.com/atompi/metabot/cmd/options"
+	"github.com/atompi/metabot/pkg/handle"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
@@ -54,7 +54,7 @@ specific tasks etc.`,
 
 		sig := make(chan os.Signal, 1)
 		signal.Notify(sig, syscall.SIGINT, syscall.SIGTERM)
-		execute.Execute(opts)
+		handle.Handle(opts)
 		<-sig
 	},
 }
