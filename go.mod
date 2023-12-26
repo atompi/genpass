@@ -1,13 +1,10 @@
-module github.com/atompi/metabot
+module github.com/atompi/genpass
 
 go 1.21.1
 
 require (
-	github.com/atompi/go-kits v0.0.0-20231128100530-9f5a930d074a
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/viper v1.17.0
-	go.uber.org/zap v1.26.0
-	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (
@@ -29,5 +26,5 @@ require (
 	golang.org/x/sys v0.15.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
-	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

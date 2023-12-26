@@ -1,54 +1,38 @@
 package options
 
 import (
-	"fmt"
-	"os"
-
 	"github.com/spf13/viper"
 )
 
 var Version string = "v1.0.0"
 
-type LogOptions struct {
-	Level string `yaml:"level"`
-	Path  string `yaml:"path"`
-}
-
-type CoreOptions struct {
-	Threads int        `yaml:"threads"`
-	Log     LogOptions `yaml:"log"`
-}
-
-type InputOptions struct {
-	Type            string `yaml:"type"`
-	Path            string `yaml:"path"`
-	AccessKeyId     string `yaml:"access_key_id"`
-	AccessKeySecret string `yaml:"access_key_secret"`
-	RegionId        string `yaml:"region_id"`
-}
-
-type OutputOptions struct {
-	Type string `yaml:"type"`
-	Path string `yaml:"path"`
-}
-
-type ResourceOptions struct {
-	Type string `yaml:"type"`
-}
+var Letters string = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+var Numbers string = "0123456789"
+var Symbols string = "~!@#$%^&*()"
 
 type Options struct {
-	Core     CoreOptions     `yaml:"core"`
-	Input    InputOptions    `yaml:"input"`
-	Output   OutputOptions   `yaml:"output"`
-	Resource ResourceOptions `yaml:"resource"`
+	All    bool
+	Letter bool
+	Number bool
+	Symbol bool
+	Length int
 }
 
-func NewOptions() (opts Options) {
-	optsSource := viper.AllSettings()
-	err := createOptions(optsSource, &opts)
-	if err != nil {
-		fmt.Fprintln(os.Stderr, "create options failed:", err)
-		os.Exit(1)
+func NewOptions() (opts *Options) {
+	opts = &Options{
+		All:    viper.GetBool("all"),
+		Letter: viper.GetBool("letter"),
+		Number: viper.GetBool("number"),
+		Symbol: viper.GetBool("symbol"),
+		Length: viper.GetInt("length"),
+	}
+	if opts.All {
+		opts.Letter = true
+		opts.Number = true
+		opts.Symbol = true
+	}
+	if opts.Length < 1 {
+		opts.Length = 8
 	}
 	return
 }

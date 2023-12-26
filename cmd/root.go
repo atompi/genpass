@@ -16,46 +16,26 @@ limitations under the License.
 package cmd
 
 import (
-	"fmt"
 	"os"
-	"os/signal"
-	"syscall"
 
-	logkit "github.com/atompi/go-kits/log"
-	"github.com/atompi/metabot/cmd/options"
-	"github.com/atompi/metabot/pkg/handle"
+	"github.com/atompi/genpass/cmd/options"
+	"github.com/atompi/genpass/pkg/handle"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"go.uber.org/zap"
 )
-
-var cfgFile string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "metabot",
-	Short: "An automated robot for CMDB system",
-	Long: `An automated bot applied to CMDB or csv files
-to accomplish importing data from external data sources,
-receiving webhook requests from CMDB and performing
-specific tasks etc.`,
+	Use:   "genpass",
+	Short: "A tool for generating random passwords",
+	Long: `A tool for generating random passwords.
+It basically conforms to the OWASP strong password specification.`,
 	Version: options.Version,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	Run: func(cmd *cobra.Command, args []string) {
 		opts := options.NewOptions()
-
-		logPath := opts.Core.Log.Path
-		logLevel := opts.Core.Log.Level
-		logger := logkit.InitLogger(logPath, logLevel)
-		defer logger.Sync()
-		undo := zap.ReplaceGlobals(logger)
-		defer undo()
-
-		sig := make(chan os.Signal, 1)
-		signal.Notify(sig, syscall.SIGINT, syscall.SIGTERM)
 		handle.Handle(opts)
-		<-sig
 	},
 }
 
@@ -75,27 +55,18 @@ func init() {
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 
-	rootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "config file (default is ./metabot.yaml)")
+	rootCmd.PersistentFlags().BoolP("all", "a", false, "with all types, represent -lns")
+	rootCmd.PersistentFlags().BoolP("letter", "l", false, "with letters")
+	rootCmd.PersistentFlags().BoolP("number", "n", false, "with numbers")
+	rootCmd.PersistentFlags().BoolP("symbol", "s", false, "with symbols")
+	rootCmd.PersistentFlags().IntP("length", "L", 8, "password length")
+
+	viper.BindPFlag("all", rootCmd.PersistentFlags().Lookup("all"))
+	viper.BindPFlag("letter", rootCmd.PersistentFlags().Lookup("letter"))
+	viper.BindPFlag("number", rootCmd.PersistentFlags().Lookup("number"))
+	viper.BindPFlag("symbol", rootCmd.PersistentFlags().Lookup("symbol"))
+	viper.BindPFlag("length", rootCmd.PersistentFlags().Lookup("length"))
 }
 
 // initConfig reads in config file and ENV variables if set.
-func initConfig() {
-	if cfgFile != "" {
-		// Use config file from the flag.
-		viper.SetConfigFile(cfgFile)
-	} else {
-		// Search config in home directory with name ".metabot" (without extension).
-		viper.AddConfigPath("./")
-		viper.SetConfigType("yaml")
-		viper.SetConfigName("metabot")
-	}
-
-	viper.AutomaticEnv() // read in environment variables that match
-
-	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err == nil {
-		fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
-	} else {
-		cobra.CheckErr(err)
-	}
-}
+func initConfig() {}
